@@ -52,6 +52,7 @@ app.route("/:id").get((req, res) => {
     }
   );
 });
+app.use("/", express.static("public"));
 var port = process.env.PORT || 8088;
 app.listen(port, () => {
   console.log("Server started at port %i", port);

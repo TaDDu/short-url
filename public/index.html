@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap 4 Website Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <style>
+  .fakeimg {
+    height: 200px;
+    background: #aaa;
+  }
+  </style>
+
+</head>
+<body>
+
+
+<div class="container" style="margin-top:30px">
+  <div class="row">
+    <div class="col-sm-12">
+      <h2>Easy short urls</h2>
+      <form id="createurl">
+        <div class="form-group">
+          <label for="url">url:</label>
+          <input type="text" class="form-control" id="url" placeholder="http://">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      <hr>
+      <ul id="urls" class="list-group">
+
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+var myStorage = window.localStorage;
+$(document).ready(function() {
+  var urls = myStorage.getItem("urls");
+  if (urls === null) {
+    myStorage.setItem("urls", JSON.stringify([]));
+    urls = myStorage.getItem("urls");
+  }
+  urls = JSON.parse(urls);
+  CreateUrlList(urls);
+});
+
+function CreateUrlList(data) {
+  if (data.length > 0) {
+    var list = $("#urls").empty();
+    data.map(function(u) {
+      list.append(
+        '<div id="' +
+          u.short +
+          '" class="list-group-item">' +
+          '<a href="' +
+          window.location.href +
+          "/" +
+          u.short +
+          '" type="button" class="btn btn-link">open ' +
+          "</a> " +
+          window.location.href +
+          "/" +
+          u.short +
+          " -> " +
+          u.url +
+          "</div>"
+      );
+    });
+  }
+}
+
+function UpdateUrlList(u) {
+  $("#urls").prepend(
+    '<div id="' +
+      u.short +
+      '" class="list-group-item">' +
+      '<a href="' +
+      window.location.href +
+      "/" +
+      u.short +
+      '" type="button" class="btn btn-link">open ' +
+      "</a> " +
+      u.short +
+      " - " +
+      u.url +
+      "</div>"
+  );
+}
+
+$("#createurl").submit(function(event) {
+  event.preventDefault();
+  var data = $("#createurl")
+    .find("#url")
+    .val();
+  $.ajax({
+    type: "POST",
+    url: window.location.href + "/new",
+    data: JSON.stringify({ url: data }),
+    dataType: "json",
+    contentType: "application/json",
+    success: function(data, status) {
+      var myStorage = window.localStorage;
+      var urls = myStorage.getItem("urls");
+      urls = JSON.parse(urls);
+      urls.push(data);
+      myStorage.setItem("urls", JSON.stringify(urls));
+      UpdateUrlList(data);
+    }
+  });
+});
+</script>
+</body>
+</html>
