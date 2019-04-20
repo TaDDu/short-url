@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+  # Render server serves dynamic pages and static content
+  front:
+      build:
+        context: "./"
+        dockerfile: "Dockerfile"
+      volumes:
+        - node_modules:/usr/src/app/node_modules
+        - ./:/usr/src/app
+      working_dir: "/usr/src/app"
+      links:
+        - mongodb
+      command: "npm start"
+      environment:
+        - "mongourl=${MONGODB}"
+        - "PORT=${PORT}"
+      ports:
+        - "80:${PORT}"
+      depends_on:
+        - mongodb
+      networks:
+        default:
+          aliases:
+            - front
+  mongodb:
+    image: 'bitnami/mongodb:4.0'
+    ports:
+      - "27017:27017"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'mongodb_data:/bitnami'
+volumes:
+    node_modules:
+    mongodb_data:
+        driver: local

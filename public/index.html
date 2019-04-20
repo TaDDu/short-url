@@ -60,12 +60,10 @@ function CreateUrlList(data) {
           '" class="list-group-item">' +
           '<a href="' +
           window.location.href +
-          "/" +
           u.short +
           '" type="button" class="btn btn-link">open ' +
           "</a> " +
           window.location.href +
-          "/" +
           u.short +
           " -> " +
           u.url +
@@ -77,19 +75,19 @@ function CreateUrlList(data) {
 
 function UpdateUrlList(u) {
   $("#urls").prepend(
-    '<div id="' +
-      u.short +
-      '" class="list-group-item">' +
-      '<a href="' +
-      window.location.href +
-      "/" +
-      u.short +
-      '" type="button" class="btn btn-link">open ' +
-      "</a> " +
-      u.short +
-      " - " +
-      u.url +
-      "</div>"
+      '<div id="' +
+        u.short +
+        '" class="list-group-item">' +
+        '<a href="' +
+        window.location.href +
+        u.short +
+        '" type="button" class="btn btn-link">open ' +
+        "</a> " +
+        window.location.href +
+        u.short +
+        " -> " +
+        u.url +
+        "</div>"
   );
 }
 
@@ -100,7 +98,7 @@ $("#createurl").submit(function(event) {
     .val();
   $.ajax({
     type: "POST",
-    url: window.location.href + "/new",
+    url: window.location.href + "new",
     data: JSON.stringify({ url: data }),
     dataType: "json",
     contentType: "application/json",
